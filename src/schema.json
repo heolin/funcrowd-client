@@ -1,0 +1,41 @@
+{
+    "name": "definicja paczek",
+    "flow": [
+        {
+            "from": 0,
+            "to": 1,
+            "conditions": null
+        },
+        {
+            "from": 1,
+            "to": 2,
+            "conditions": [
+                {
+                    "item": 0, 
+                    "answers": [1]
+                },
+                {
+                    "item": 1,
+                    "answers": [2]
+                }
+            ]
+        },
+        {
+            "from": 1,
+            "to": 3,
+            "conditions": null
+        },
+        {
+            "from": 2,
+            "to": 3,
+            "conditions": null
+        }, {
+            "from": 3,
+            "to": null,
+            "conditions": null
+        }
+    ],
+    "metadata": {
+        
+    }
+}
