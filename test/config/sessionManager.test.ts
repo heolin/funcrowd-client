@@ -2,34 +2,11 @@ import ConfigBuilder from "../../src/session/configBuilder";
 import SessionManager from "../../src/session/sessionManager";
 import {UserUndefinedError} from "../../src/session/errors";
 import User from "../../src/models/user/user";
-
-
-function userFixture() {
-    return User.fromJson({
-        'id': 1,
-        'username': 'sample',
-        'email': 'sample@email.com',
-        'token': '12345',
-        'profile': 2,
-        'group': 2,
-        'exp': 100
-    });
-}
-
-function sessionManagerFixture() {
-    return new SessionManager(
-        "localhost",
-        configBuilderFixture()
-    );
-}
-
-function configBuilderFixture() {
-    return new ConfigBuilder();
-}
+import { configBuilderFixture, sessionManagerFixture, userFixture } from "./fixtures";
 
 
 describe("Test SessionManager", () => {
-    const configBuilder: ConfigBuilder = new ConfigBuilder();
+    const configBuilder: ConfigBuilder = configBuilderFixture();
     const user: User = userFixture();
     const baseUrl: string = "localhost";
 
