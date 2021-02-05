@@ -1,4 +1,4 @@
-import ConfigBuilder from "../../src/config/configBuilder";
+import ConfigBuilder from "../../src/session/configBuilder";
 
 
 describe("Test ConfigBuilder", () => {
