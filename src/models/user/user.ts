@@ -1,9 +1,12 @@
-import { IUserDetails } from "./userDetails";
+import { IUserStatus } from "./userStatus";
 
 
-export interface IUser extends IUserDetails {
-    token: string;
+export interface IUser extends IUserStatus {
+    email: string;
+    group: number;
+    token: Nullable<string>;
 }
+
 
 /**
  * 
@@ -11,18 +14,18 @@ export interface IUser extends IUserDetails {
 export default class User implements IUser {
 
     constructor(public id: number, public username: string, 
-                public email:string, public token:string,
-                public profile: number, public group: number,
-                public exp: number) {}
+                public email:string, public profile: number, 
+                public group: number, public exp: number,
+                public token: Nullable<string>) {}
 
     static fromJson(data: IUser): User {
         let object = new User(data.id,
             data.username,
             data.email,
-            data.token,
             data.profile,
             data.group,
-            data.exp
+            data.exp,
+            data.token
         );
         return object;
     }

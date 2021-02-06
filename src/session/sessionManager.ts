@@ -11,6 +11,7 @@ const API_URL = "/api/v1/";
 export default class SessionManager {
     private _configBuilder: ConfigBuilder;
     private _user: Nullable<User>;
+    private _authToken: Nullable<string>;
     private _config: Nullable<Object>;
     private _baseUrl: string;
 
@@ -33,12 +34,23 @@ export default class SessionManager {
 
     /**
      * Used to setup new user after the login it. 
+     * It will setup an authentication token using value from `user` object.
+     * Notice, if `user.token` is undefined the token will be set to undefined too.
      * It will create a proper config object based on selected configBuilder. 
      * @param user 
      */
     setupUser(user: User): void {
         this._user = user;
+        this._authToken = user.token;
         this._config = this._configBuilder.create();
+    }
+
+    /**
+     * Used to setup authentication token without setting up the whole user.
+     * @param authToken - authentication token for active user
+     */
+    setupAuthToken(authToken: string): void {
+        this._authToken = authToken;
     }
 
     /**
@@ -54,15 +66,15 @@ export default class SessionManager {
      * 
      */
     getAuthHeader(): Object {
-        if (this.user) {
+        if (this._authToken) {
             return {
                 headers: {
-                    Authorization: "Token " + this.user.token
+                    Authorization: "Token " + this._authToken
                 }
             };
         } else {
             throw new UserUndefinedError(
-                "User is undefined. You need to setup the user first.")
+                "User is undefined. You need to setup the user or the authentication token first.");
         }
     }
 }

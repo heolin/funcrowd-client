@@ -1,9 +1,8 @@
 import axios, {AxiosResponse} from 'axios';
 import SessionManager from "../session/sessionManager";
 
-import User from "../models/user/user";
 import UserStatus from "../models/user/userStatus";
-import UserDetails from "../models/user/userDetails";
+import User from "../models/user/user";
 import UserStats from "../models/user/userStats";
 
 /**
@@ -21,8 +20,6 @@ export default class UserRepository {
      */
     async login(email: string, password: string): Promise<User> {
         let url = this._sessionManager.createUrl('users/login/');
-        console.log("POSTING");
-        console.log(url);
 
         const response = await axios.post(
             this._sessionManager.createUrl('users/login/'),
@@ -189,12 +186,12 @@ export default class UserRepository {
     /**
      * @returns
      */
-    async getCurrentUserDetails(): Promise<UserDetails> {
+    async getCurrentUserDetails(): Promise<User> {
         const response = await axios.get(
             this._sessionManager.createUrl('users/details/'),
             this._sessionManager.getAuthHeader()
         );
-        let details = UserDetails.fromJson(response.data);
+        let details = User.fromJson(response.data);
         return details;
     }
 
