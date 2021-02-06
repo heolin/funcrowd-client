@@ -20,7 +20,10 @@ export default class UserRepository {
      * @returns an User object containing information of logged in user
      */
     async login(email: string, password: string): Promise<User> {
-    
+        let url = this._sessionManager.createUrl('users/login/');
+        console.log("POSTING");
+        console.log(url);
+
         const response = await axios.post(
             this._sessionManager.createUrl('users/login/'),
             {
