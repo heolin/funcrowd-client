@@ -1,11 +1,13 @@
 
 export default class Item {
-    itemId: int;
-    data: string;
+    itemId: number;
+    data: string | undefined;
     schema: string;
 
 
     constructor() {
-        this.data = null;
+        this.data = undefined;
+        this.itemId = 0;
+        this.schema = "";
     }
 }
