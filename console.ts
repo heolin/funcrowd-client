@@ -1,8 +1,8 @@
-import Context from "./context";
-import User from "./models/user/user";
-import UserRepository from "./repositories/userRepository";
-import ConfigBuilder from "./session/configBuilder";
-import SessionManager from "./session/sessionManager";
+import Context from "./src/context";
+import User from "./src/models/user/user";
+import UserRepository from "./src/repositories/userRepository";
+import ConfigBuilder from "./src/session/configBuilder";
+import SessionManager from "./src/session/sessionManager";
 
 const authToken = '1e0761425a2655ba3ba6e315dbdb1fb764776018';
 

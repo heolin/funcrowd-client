@@ -1,3 +1,7 @@
+import axios from 'axios';
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
 import User from "../../src/models/user/user";
 import UserRepository from "../../src/repositories/userRepository";
 import { sessionManagerFixture, userFixture } from "../config/fixtures";
@@ -32,7 +36,14 @@ describe("Test login endpoint", () => {
     let repository: UserRepository = userRepositoryFixture();
 
     it("Test successfull call", () => {
-        let response = repository.login("admin@admin.pl", "Wojtek123");
-        console.log(response)
+        repository.login("test@email.com", "password").then((response) => {
+        });
+        expect(mockedAxios.post).toHaveBeenCalledWith(
+            "localhost/api/v1/users/login/",
+            {
+                "email": "test@email.com",
+                "password": "password"
+            }
+        );
     });
 });
