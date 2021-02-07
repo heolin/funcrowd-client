@@ -1,16 +1,8 @@
-import axios, { AxiosResponse } from 'axios';
-
-import User, { IUser } from "../../src/models/user/user";
+import User from "../../src/models/user/user";
 import UserRepository from "../../src/repositories/userRepository";
-import { sessionManagerFixture, userFixture } from "../config/fixtures";
+import { sessionManagerAfterSetupFixture } from "../config/fixtures";
+import { mockedAxiosFixture, PromiseOutcome } from "./fixtures";
 
-
-function sessionManagerAfterSetupFixture() {
-    const sessionManager = sessionManagerFixture();
-    const user: User = userFixture();
-    sessionManager.setupUser(user);
-    return sessionManager;
-}
 
 function userRepositoryFixture() {
     let sessionManager = sessionManagerAfterSetupFixture();
@@ -29,24 +21,21 @@ describe("Test setting up UserRepository", () => {
 });
 
 
-
 describe("Test login endpoint", () => {
     let repository: UserRepository = userRepositoryFixture();
 
-    const expectedValue = {
-        "email": "test@email.com",
-        "username": "test",
-        "token": "token",
-        "profile": 1,
-        "group": 1,
-        "exp": 20
-    }
-
-    const feedResponsePromise = Promise.resolve({ data: expectedValue } as AxiosResponse);
-    const mockedAxios = jest.spyOn(axios, "post");
-    mockedAxios.mockReturnValueOnce(feedResponsePromise);    
-
     it("Test successfull call", async () => {
+        const expectedValue = {
+            "email": "test@email.com",
+            "username": "test",
+            "token": "token",
+            "profile": 1,
+            "group": 1,
+            "exp": 20
+        }
+    
+        let mockedAxios = mockedAxiosFixture("post", PromiseOutcome.resolve, expectedValue);
+        
         let response = await repository.login("test@email.com", "password");
         expect(response).toBeInstanceOf(User);
         expect(response).toMatchObject(expectedValue);
@@ -57,5 +46,12 @@ describe("Test login endpoint", () => {
                 "password": "password"
             }
         );
+    });
+
+    it("Test failed call", async () => {
+        let expectedValue = "error";
+        mockedAxiosFixture("post", PromiseOutcome.reject, expectedValue);
+        
+        expect(repository.login("test@email.com", "wrongpassword")).rejects.toEqual({data: expectedValue});
     });
 });

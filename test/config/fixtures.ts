@@ -22,6 +22,13 @@ export function sessionManagerFixture() {
     );
 }
 
+export function sessionManagerAfterSetupFixture() {
+    const sessionManager = sessionManagerFixture();
+    const user: User = userFixture();
+    sessionManager.setupUser(user);
+    return sessionManager;
+}
+
 export function configBuilderFixture() {
     return new ConfigBuilder();
 }

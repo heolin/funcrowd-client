@@ -1,8 +1,8 @@
-import Context from "./src/context";
-import User from "./src/models/user/user";
-import UserRepository from "./src/repositories/userRepository";
-import ConfigBuilder from "./src/session/configBuilder";
-import SessionManager from "./src/session/sessionManager";
+import Context from "./context";
+import User from "./models/user/user";
+import UserRepository from "./repositories/userRepository";
+import ConfigBuilder from "./session/configBuilder";
+import SessionManager from "./session/sessionManager";
 
 const authToken = '1e0761425a2655ba3ba6e315dbdb1fb764776018';
 
@@ -16,14 +16,21 @@ let context = new Context(sessionManager);
 
 let userRepository: UserRepository = context.repositories.userRepository;
 
-userRepository.login("admin@admin.pl", "Wojtek1234").then((user) => {
+userRepository.login("admin@admin.pl", "Wojtek1234").then((user: User) => {
     console.log(user);
+});
+
+
+userRepository.login("admin@admin.pl", "Test").catch((error: any) => {
+    console.log(error.response.status);
+    console.log(error.response.statusText);
+    console.log(error.response.data);
 });
 
 
 sessionManager.setupAuthToken(authToken);
 
-userRepository.getCurrentUserDetails().then((user) => {
+userRepository.getCurrentUserDetails().then((user: User) => {
     user.token = authToken;
     console.log(user);
 });
