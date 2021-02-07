@@ -1,8 +1,6 @@
-import axios from 'axios';
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+import axios, { AxiosResponse } from 'axios';
 
-import User from "../../src/models/user/user";
+import User, { IUser } from "../../src/models/user/user";
 import UserRepository from "../../src/repositories/userRepository";
 import { sessionManagerFixture, userFixture } from "../config/fixtures";
 
@@ -35,10 +33,24 @@ describe("Test setting up UserRepository", () => {
 describe("Test login endpoint", () => {
     let repository: UserRepository = userRepositoryFixture();
 
-    it("Test successfull call", () => {
-        repository.login("test@email.com", "password").then((response) => {
-        });
-        expect(mockedAxios.post).toHaveBeenCalledWith(
+    const expectedValue = {
+        "email": "test@email.com",
+        "username": "test",
+        "token": "token",
+        "profile": 1,
+        "group": 1,
+        "exp": 20
+    }
+
+    const feedResponsePromise = Promise.resolve({ data: expectedValue } as AxiosResponse);
+    const mockedAxios = jest.spyOn(axios, "post");
+    mockedAxios.mockReturnValueOnce(feedResponsePromise);    
+
+    it("Test successfull call", async () => {
+        let response = await repository.login("test@email.com", "password");
+        expect(response).toBeInstanceOf(User);
+        expect(response).toMatchObject(expectedValue);
+        expect(mockedAxios).toHaveBeenCalledWith(
             "localhost/api/v1/users/login/",
             {
                 "email": "test@email.com",
