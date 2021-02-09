@@ -3,7 +3,7 @@ import SessionManager from "../session/sessionManager";
 
 import UserStatus from "../models/user/userStatus";
 import User from "../models/user/user";
-import UserStats from "../models/user/userStats";
+import UserMetrics from "../models/user/userMetrics";
 
 /**
  * 
@@ -19,14 +19,13 @@ export default class UserRepository {
      * @returns an User object containing information of logged in user
      */
     async login(email: string, password: string): Promise<User> {
-        let url = this._sessionManager.createUrl('users/login/');
-
-        const response = await axios.post(
-            this._sessionManager.createUrl('users/login/'),
+        const response = await this._sessionManager.post(
+            'users/login/',
             {
                 email: email,
                 password: password
-            }
+            },
+            false
         );
         let user = User.fromJson(response.data);
         return user;
@@ -42,14 +41,15 @@ export default class UserRepository {
      */
     async register(username: string, email: string,
                           password1: string, password2: string): Promise<AxiosResponse> {
-        const response = await axios.post(
-            this._sessionManager.createUrl('users/register/'),
+        const response = await this._sessionManager.post(
+            'users/register/',
             {
                 username: username,
                 email: email,
                 password1: password1,
                 password2: password2
-            }
+            },
+            false
         );
         return response;
     }
@@ -60,12 +60,11 @@ export default class UserRepository {
      * @returns
      */
     async changeSettings(username: string): Promise<User> {
-        const response = await axios.post(
-            this._sessionManager.createUrl('users/change_settings/'),
+        const response = await this._sessionManager.post(
+            'users/change_settings/',
             {
                 username: username
-            },
-            this._sessionManager.getAuthHeader()
+            }
         );
         let user = User.fromJson(response.data);
         return user;
@@ -78,16 +77,15 @@ export default class UserRepository {
      * @returns
      */
     async changePassword(oldPassword: string,
-                                newPassword1: string,
-                                newPassword2: string): Promise<User> {
-        const response = await axios.post(
-            this._sessionManager.createUrl('users/change_password/'),
+                        newPassword1: string,
+                        newPassword2: string): Promise<User> {
+        const response = await this._sessionManager.post(
+            'users/change_password/',
             {
                 old_password: oldPassword,
                 new_password1: newPassword1,
                 new_password2: newPassword2
-            },
-            this._sessionManager.getAuthHeader()
+            }
         );
         let user = User.fromJson(response.data);
         return user;
@@ -98,11 +96,12 @@ export default class UserRepository {
      * @returns
      */
     async resetPassword(email: string): Promise<AxiosResponse> {
-        const response = await axios.post(
-            this._sessionManager.createUrl('users/reset_password/'),
+        const response = await this._sessionManager.post(
+            'users/reset_password/',
             {
                 email: email,
-            }
+            },
+            false
         );
         return response
     }
@@ -114,14 +113,15 @@ export default class UserRepository {
      * @returns
      */
     async changePasswordWithResetToken(resetToken: string, password1: string,
-                               password2: string): Promise<AxiosResponse> {
-        const response = await axios.post(
-            this._sessionManager.createUrl('users/reset_password/token/'),
+                                       password2: string): Promise<AxiosResponse> {
+        const response = await this._sessionManager.post(
+            'users/reset_password/token/',
             {
                 token: resetToken,
                 password1: password1,
                 password2: password2
-            }
+            },
+            false
         );
         return response;
     }
@@ -131,11 +131,12 @@ export default class UserRepository {
      * @returns
      */
     async activateAccount(activationToken: string): Promise<User> { 
-        const response = await axios.post(
-            this._sessionManager.createUrl('users/activate/'),
+        const response = await this._sessionManager.post(
+            'users/activate/',
             {
                 token: activationToken,
-            }
+            },
+            false
         );
         let user = User.fromJson(response.data);
         return user;
@@ -146,11 +147,12 @@ export default class UserRepository {
      * @returns
      */
     async resetActivationToken(token: string): Promise<AxiosResponse> {       
-        const response = axios.post(
-            this._sessionManager.createUrl('users/activate/renew/'),
+        const response = await this._sessionManager.post(
+            'users/activate/renew/',
             {
                 token: token,
-            }
+            },
+            false
         );
         return response;
     }
@@ -159,13 +161,14 @@ export default class UserRepository {
      * @param workerId
      * @returns
      */
-    async loginMturk(workerId: string): Promise<User> {
+    async loginMturk(workerUsername: string): Promise<User> {
     
-        const response = await axios.post(
-            this._sessionManager.createUrl('users/mturk/'),
+        const response = await this._sessionManager.post(
+            'users/mturk/',
             {
-                worker_id: workerId,
-            }
+                worker_id: workerUsername,
+            },
+            false
         );
         let user = User.fromJson(response.data);
         return user;
@@ -175,9 +178,8 @@ export default class UserRepository {
      * @returns
      */
     async getCurrentUserStatus(): Promise<UserStatus> {    
-        const response = await axios.get(
-            this._sessionManager.createUrl('users/status/'),
-            this._sessionManager.getAuthHeader()
+        const response = await this._sessionManager.get(
+            'users/status/'
         );
         let status = UserStatus.fromJson(response.data);
         return status;
@@ -187,9 +189,8 @@ export default class UserRepository {
      * @returns
      */
     async getCurrentUserDetails(): Promise<User> {
-        const response = await axios.get(
-            this._sessionManager.createUrl('users/details/'),
-            this._sessionManager.getAuthHeader()
+        const response = await this._sessionManager.get(
+            'users/details/'
         );
         let details = User.fromJson(response.data);
         return details;
@@ -199,12 +200,11 @@ export default class UserRepository {
      * @param workerId
      * @returns
      */
-    async getUserStats(workerId: string): Promise<UserStats> {
-        const response = await axios.get(
-            this._sessionManager.createUrl('stats/users/' + workerId + '/'),
-            this._sessionManager.getAuthHeader()
+    async getUserMetrics(workerId: number): Promise<UserMetrics> {
+        const response = await this._sessionManager.get(
+            'stats/users/' + workerId + '/'
         );
-        let stats = UserStats.fromJson(response.data);
-        return stats;
+        let metrics = UserMetrics.fromJson(response.data);
+        return metrics;
     }
 }

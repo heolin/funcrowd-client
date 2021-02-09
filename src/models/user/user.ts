@@ -9,7 +9,7 @@ export interface IUser extends IUserStatus {
 
 
 /**
- * 
+ * Stores full information about the User
  */
 export default class User implements IUser {
 

@@ -1,8 +1,8 @@
 import ConfigBuilder from "../../src/session/configBuilder";
 import SessionManager from "../../src/session/sessionManager";
-import {UserUndefinedError} from "../../src/session/errors";
 import User from "../../src/models/user/user";
 import { configBuilderFixture, sessionManagerFixture, userFixture } from "./fixtures";
+import { AxiosResponse } from "axios";
 
 
 describe("Test SessionManager", () => {
@@ -16,11 +16,6 @@ describe("Test SessionManager", () => {
         expect(manager.config).toBeUndefined();
         expect(manager.user).toBeUndefined();
 
-        try {
-            manager.getAuthHeader()
-        } catch(e) {
-            expect(e).toBeInstanceOf(UserUndefinedError);
-        }
     });
 
     it("Setting up user", () => {
@@ -29,5 +24,20 @@ describe("Test SessionManager", () => {
 
         expect(manager.config).not.toBeUndefined();
         expect(manager.user).toBeInstanceOf(User);      
+    });
+
+    it("Test client for unlogged user", () => {
+        let manager: SessionManager = sessionManagerFixture();
+         
+    });
+
+    it("Test client for logged user", () => {
+        let manager: SessionManager = sessionManagerFixture();
+        manager.setupUser(user); 
+    });
+
+    it("Test client without the config", () => {
+        let manager: SessionManager = sessionManagerFixture();
+         
     });
 });

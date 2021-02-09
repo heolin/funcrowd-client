@@ -7,7 +7,8 @@ export interface IUserStatus {
 }
 
 /**
- * 
+ * Stores basic information about the user.
+ * Used mostly to get updates about the changes in user's exp.
  */
 export default class UserStatus implements IUserStatus {
 

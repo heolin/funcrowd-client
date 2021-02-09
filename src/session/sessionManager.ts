@@ -1,6 +1,8 @@
 import ConfigBuilder from "./configBuilder";
 import User from "../models/user/user";
 import {UserUndefinedError} from "./errors";
+import applyCaseMiddleware from 'axios-case-converter';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 const API_URL = "/api/v1/";
 
@@ -14,6 +16,7 @@ export default class SessionManager {
     private _authToken: Nullable<string>;
     private _config: Nullable<Object>;
     private _baseUrl: string;
+    private _client: AxiosInstance;
 
     get config(): Nullable<Object> {
         return this._config;
@@ -30,6 +33,7 @@ export default class SessionManager {
     constructor(baseUrl: string, configBuilder: ConfigBuilder) {
         this._baseUrl = baseUrl;
         this._configBuilder = configBuilder;
+        this._client = applyCaseMiddleware(axios.create());
     }
 
     /**
@@ -54,27 +58,45 @@ export default class SessionManager {
     }
 
     /**
+     * Wrapper around axios's get that sill change 
+     * @param endpoint
+     * @param useConfig 
+     */
+    get(endpoint: string, useConfig: boolean = true): Promise<AxiosResponse> {
+        return this._client.get(
+            this._createUrl(endpoint), useConfig ? this._getAuthConfig() : undefined);
+    }
+
+    /**
+     * 
+     * @param endpoint
+     * @param data 
+     * @param useConfig 
+     */
+    post(endpoint: string, data?: any, useConfig: boolean = true): Promise<AxiosResponse> {
+        return this._client.post(
+            this._createUrl(endpoint), data, useConfig ? this._getAuthConfig() : undefined);
+    }
+
+    /**
      * Used to create a full url to the backend service.
      * @param endpoint - name of the endpoint, e.g. `user/stats`
      * @return generated url to the backend API
      */
-    createUrl(endpoint: string): string {
+    private _createUrl(endpoint: string): string {
         return this._baseUrl + API_URL + endpoint;
     }
 
     /**
      * 
      */
-    getAuthHeader(): Object {
+    private _getAuthConfig(): AxiosRequestConfig | undefined {
         if (this._authToken) {
             return {
                 headers: {
                     Authorization: "Token " + this._authToken
                 }
             };
-        } else {
-            throw new UserUndefinedError(
-                "User is undefined. You need to setup the user or the authentication token first.");
         }
     }
 }

@@ -16,6 +16,21 @@ let context = new Context(sessionManager);
 
 let userRepository: UserRepository = context.repositories.userRepository;
 
+
+
+sessionManager.setupAuthToken(authToken);
+
+userRepository.getUserMetrics(3).then((result) => {
+    console.log(result);
+})
+
+/*
+
+userRepository.register("admin", "admin@admin.pl", "password", "password").catch((response) => {
+    console.log(typeof response.response);
+});
+
+
 userRepository.login("admin@admin.pl", "Wojtek1234").then((user: User) => {
     console.log(user);
 });
@@ -34,3 +49,4 @@ userRepository.getCurrentUserDetails().then((user: User) => {
     user.token = authToken;
     console.log(user);
 });
+*/
