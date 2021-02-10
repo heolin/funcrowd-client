@@ -50,6 +50,16 @@ export default class SessionManager {
     }
 
     /**
+     * Used to logout the user.
+     * Clears the authToken and current config.
+     */
+    logoutUser(): void {
+        this._user = undefined;
+        this._authToken = undefined;
+        this._config = undefined;
+    }
+
+    /**
      * Used to setup authentication token without setting up the whole user.
      * @param authToken - authentication token for active user
      */

@@ -3,6 +3,7 @@ import User from "../../src/models/user/user";
 import UserRepository from "../../src/repositories/userRepository";
 import { sessionManagerAfterSetupFixture } from "../config/fixtures";
 import MockAdapter from 'axios-mock-adapter';
+import UserStatus from "../../src/models/user/userStatus";
 
 function userRepositoryFixture() {
     let sessionManager = sessionManagerAfterSetupFixture();
@@ -29,6 +30,7 @@ describe("Test login endpoint", () => {
 
     it("Test successfull call", async () => {
         const expectedValue = {
+            "id": 1,
             "email": "test@email.com",
             "username": "test",
             "token": "token",
@@ -42,7 +44,14 @@ describe("Test login endpoint", () => {
         let response = await repository.login("test@email.com", "password");
         expect(response).toBeInstanceOf(User);
         expect(response).toMatchObject(expectedValue);
-        expect(clientSpy).toHaveBeenCalled();
+        expect(clientSpy).toHaveBeenCalledWith(
+            "localhost/api/v1/users/login/",
+            {
+                "email": "test@email.com",
+                "password": "password"
+            },
+            undefined
+        );
     });
     
     it("Test failed call", async () => {
@@ -68,7 +77,54 @@ describe("Test register endpoint", () => {
             "test", "test@email.com", "password", "password");
 
         expect(response.data).toEqual(expectedValue);
-        expect(clientSpy).toHaveBeenCalled();
+        expect(clientSpy).toHaveBeenCalledWith(
+            "localhost/api/v1/users/register/",
+            {
+                "username": "test",
+                "email": "test@email.com",
+                "password1": "password",
+                "password2": "password"
+            },
+            undefined
+        );
+    });
+
+    it("Test failed call", async () => {
+        let expectedValue = "error";
+        mockedAxios.onPost("localhost/api/v1/users/register/").reply(400, expectedValue);
+        
+        await expect(repository.register("test", "test@email.com", "password", "password")).rejects.toThrow();
+    });
+});
+
+
+describe("Test get current user status", () => {
+    let repository: UserRepository = userRepositoryFixture();
+    let _client = repository['_sessionManager']['_client'];
+    let mockedAxios = new MockAdapter(_client);
+    const clientSpy = jest.spyOn(_client, 'get');
+
+    it("Test successfull call", async () => {
+        const expectedValue = {
+            "id": 3,
+            "username": "test",
+            "profile": 1,
+            "exp": 20
+        }
+
+        mockedAxios.onGet("localhost/api/v1/users/status/").reply(200, expectedValue);
+        
+        let response = await repository.getCurrentUserStatus();
+        expect(response).toBeInstanceOf(UserStatus);
+        expect(response).toMatchObject(expectedValue);
+        expect(clientSpy).toHaveBeenCalledWith(
+            "localhost/api/v1/users/status/",
+            {
+                "headers":  {
+                    "Authorization": "Token 12345"
+                }
+            }
+        );
     });
 
     it("Test failed call", async () => {
