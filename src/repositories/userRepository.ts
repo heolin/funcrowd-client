@@ -166,7 +166,7 @@ export default class UserRepository {
         const response = await this._sessionManager.post(
             'users/mturk/',
             {
-                worker_id: workerUsername,
+                workerId: workerUsername,
             },
             false
         );

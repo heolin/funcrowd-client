@@ -2,7 +2,6 @@ import ConfigBuilder from "../../src/session/configBuilder";
 import SessionManager from "../../src/session/sessionManager";
 import User from "../../src/models/user/user";
 import { configBuilderFixture, sessionManagerFixture, userFixture } from "./fixtures";
-import { AxiosResponse } from "axios";
 import MockAdapter from "axios-mock-adapter";
 
 

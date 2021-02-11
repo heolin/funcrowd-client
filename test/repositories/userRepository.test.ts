@@ -1,9 +1,10 @@
-import { AxiosResponse } from "axios";
 import User from "../../src/models/user/user";
+import UserStatus from "../../src/models/user/userStatus";
+import UserMetrics from "../../src/models/user/userMetrics";
 import UserRepository from "../../src/repositories/userRepository";
 import { sessionManagerAfterSetupFixture } from "../config/fixtures";
 import MockAdapter from 'axios-mock-adapter';
-import UserStatus from "../../src/models/user/userStatus";
+
 
 function userRepositoryFixture() {
     let sessionManager = sessionManagerAfterSetupFixture();
@@ -27,6 +28,10 @@ describe("Test login endpoint", () => {
     let _client = repository['_sessionManager']['_client'];
     let mockedAxios = new MockAdapter(_client);
     const clientSpy = jest.spyOn(_client, 'post');
+
+    beforeEach(() => {
+        clientSpy.mockClear();
+    });
 
     it("Test successfull call", async () => {
         const expectedValue = {
@@ -55,10 +60,10 @@ describe("Test login endpoint", () => {
     });
     
     it("Test failed call", async () => {
-        let expectedValue = "error";
-        mockedAxios.onPost("localhost/api/v1/users/login/").reply(403, expectedValue);
+        mockedAxios.onPost("localhost/api/v1/users/login/").reply(403);
 
         await expect(repository.login("test@email.com", "wrongpassword")).rejects.toThrow();
+        expect(clientSpy).toHaveBeenCalled();
     });
 });
 
@@ -68,6 +73,10 @@ describe("Test register endpoint", () => {
     let _client = repository['_sessionManager']['_client'];
     let mockedAxios = new MockAdapter(_client);
     const clientSpy = jest.spyOn(_client, 'post');
+
+    beforeEach(() => {
+        clientSpy.mockClear();
+    });
 
     it("Test successfull call", async () => {
         const expectedValue = "success";    
@@ -90,10 +99,56 @@ describe("Test register endpoint", () => {
     });
 
     it("Test failed call", async () => {
-        let expectedValue = "error";
-        mockedAxios.onPost("localhost/api/v1/users/register/").reply(400, expectedValue);
+        mockedAxios.onPost("localhost/api/v1/users/register/").reply(400);
         
-        await expect(repository.register("test", "test@email.com", "password", "password")).rejects.toThrow();
+        await expect(repository.register(
+            "test", "test@email.com", "password", "password")).rejects.toThrow();
+        expect(clientSpy).toHaveBeenCalled();
+    });
+});
+
+
+describe("Test login mturk endpoint", () => {
+    let repository: UserRepository = userRepositoryFixture();
+    let _client = repository['_sessionManager']['_client'];
+    let mockedAxios = new MockAdapter(_client);
+    const clientSpy = jest.spyOn(_client, 'post');
+
+    beforeEach(() => {
+        clientSpy.mockClear();
+    });
+
+    it("Test successfull call", async () => {
+        const expectedValue = {
+            "id": 1,
+            "email": "test@mail",
+            "username": "WORKERID0001",
+            "token": "token",
+            "profile": 1,
+            "group": 1,
+            "exp": 20
+        }
+
+        mockedAxios.onPost("localhost/api/v1/users/mturk/").reply(200, expectedValue);
+        
+        let response = await repository.loginMturk("WORKERID0001");
+
+        expect(response).toBeInstanceOf(User);
+        expect(response).toMatchObject(expectedValue);
+        expect(clientSpy).toHaveBeenCalledWith(
+            "localhost/api/v1/users/mturk/",
+            {
+                "workerId": "WORKERID0001"
+            },
+            undefined
+        );
+    });
+
+    it("Test failed call", async () => {
+        mockedAxios.onPost("localhost/api/v1/users/mturk/").reply(400);
+        
+        await expect(repository.loginMturk("WORKERID0001")).rejects.toThrow();
+        expect(clientSpy).toHaveBeenCalled();
     });
 });
 
@@ -103,6 +158,10 @@ describe("Test get current user status", () => {
     let _client = repository['_sessionManager']['_client'];
     let mockedAxios = new MockAdapter(_client);
     const clientSpy = jest.spyOn(_client, 'get');
+
+    beforeEach(() => {
+        clientSpy.mockClear();
+    });
 
     it("Test successfull call", async () => {
         const expectedValue = {
@@ -128,9 +187,100 @@ describe("Test get current user status", () => {
     });
 
     it("Test failed call", async () => {
-        let expectedValue = "error";
-        mockedAxios.onPost("localhost/api/v1/users/register/").reply(400, expectedValue);
+        mockedAxios.onGet("localhost/api/v1/users/status/").reply(400);
         
-        await expect(repository.register("test", "test@email.com", "password", "password")).rejects.toThrow();
+        await expect(repository.getCurrentUserStatus()).rejects.toThrow();
+        expect(clientSpy).toHaveBeenCalled();
+    });
+});
+
+
+describe("Test get current user details", () => {
+    let repository: UserRepository = userRepositoryFixture();
+    let _client = repository['_sessionManager']['_client'];
+    let mockedAxios = new MockAdapter(_client);
+    const clientSpy = jest.spyOn(_client, 'get');
+
+    beforeEach(() => {
+        clientSpy.mockClear();
+    });
+
+    it("Test successfull call", async () => {
+        const expectedValue = {
+            "id": 1,
+            "email": "test@email.com",
+            "username": "test",
+            "token": undefined,
+            "profile": 1,
+            "group": 1,
+            "exp": 20
+        }
+
+        mockedAxios.onGet("localhost/api/v1/users/details/").reply(200, expectedValue);
+        
+        let response = await repository.getCurrentUserDetails();
+        expect(response).toBeInstanceOf(User);
+        expect(response).toMatchObject(expectedValue);
+        expect(clientSpy).toHaveBeenCalledWith(
+            "localhost/api/v1/users/details/",
+            {
+                "headers":  {
+                    "Authorization": "Token 12345"
+                }
+            }
+        );
+    });
+
+    it("Test failed call", async () => {
+        mockedAxios.onGet("localhost/api/v1/users/details/").reply(400);
+        
+        await expect(repository.getCurrentUserDetails()).rejects.toThrow();
+        expect(clientSpy).toHaveBeenCalled();
+    });
+});
+
+
+describe("Test get current user metrics", () => {
+    let repository: UserRepository = userRepositoryFixture();
+    let _client = repository['_sessionManager']['_client'];
+    let mockedAxios = new MockAdapter(_client);
+    const clientSpy = jest.spyOn(_client, 'get');
+
+    beforeEach(() => {
+        clientSpy.mockClear();
+    });
+
+    it("Test successfull call", async () => {
+        const expectedValue = {
+            "userId": 1,
+            "annotatedDocuments": 1,
+            "highAgreementCount": 1,
+            "highAgreementPercentage": 0.5,
+            "agreementRankingPosition": 1,
+            "agreementRankingPercentage": 0.5,
+            "annotatedMissions": 1,
+            "annotatedTasks": 1
+        }
+
+        mockedAxios.onGet("localhost/api/v1/stats/users/1/").reply(200, expectedValue);
+        
+        let response = await repository.getUserMetrics(1);
+        expect(response).toBeInstanceOf(UserMetrics);
+        expect(response).toMatchObject(expectedValue);
+        expect(clientSpy).toHaveBeenCalledWith(
+            "localhost/api/v1/stats/users/1/",
+            {
+                "headers":  {
+                    "Authorization": "Token 12345"
+                }
+            }
+        );
+    });
+
+    it("Test failed call", async () => {
+        mockedAxios.onGet("localhost/api/v1/stats/users/1/").reply(400);
+        
+        await expect(repository.getUserMetrics(1)).rejects.toThrow();
+        expect(clientSpy).toHaveBeenCalled();
     });
 });
