@@ -59,14 +59,14 @@ export default class UserRepository {
      * @param username
      * @returns
      */
-    async changeSettings(username: string): Promise<User> {
+    async changeSettings(username: string): Promise<UserStatus> {
         const response = await this._sessionManager.post(
             'users/change_settings/',
             {
                 username: username
             }
         );
-        let user = User.fromJson(response.data);
+        let user = UserStatus.fromJson(response.data);
         return user;
     }
 
@@ -78,17 +78,16 @@ export default class UserRepository {
      */
     async changePassword(oldPassword: string,
                         newPassword1: string,
-                        newPassword2: string): Promise<User> {
+                        newPassword2: string): Promise<AxiosResponse> {
         const response = await this._sessionManager.post(
             'users/change_password/',
             {
-                old_password: oldPassword,
-                new_password1: newPassword1,
-                new_password2: newPassword2
+                oldPassword: oldPassword,
+                newPassword1: newPassword1,
+                newPassword2: newPassword2
             }
         );
-        let user = User.fromJson(response.data);
-        return user;
+        return response;
     }
 
     /**

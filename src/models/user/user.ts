@@ -4,6 +4,7 @@ import { IUserStatus } from "./userStatus";
 export interface IUser extends IUserStatus {
     email: string;
     group: number;
+    profile: number;
     token: Nullable<string>;
 }
 

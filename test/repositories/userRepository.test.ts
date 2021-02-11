@@ -108,6 +108,91 @@ describe("Test register endpoint", () => {
 });
 
 
+describe("Test changeSettings endpoint", () => {
+    let repository: UserRepository = userRepositoryFixture();
+    let _client = repository['_sessionManager']['_client'];
+    let mockedAxios = new MockAdapter(_client);
+    const clientSpy = jest.spyOn(_client, 'post');
+
+    beforeEach(() => {
+        clientSpy.mockClear();
+    });
+
+    it("Test successfull call", async () => {
+        const expectedValue = {
+            "id": 1,
+            "username": "newUsername",
+            "exp": 20
+        }
+
+        mockedAxios.onPost("localhost/api/v1/users/change_settings/").reply(200, expectedValue);
+        
+        let response = await repository.changeSettings("newUsername");
+
+        expect(response).toBeInstanceOf(UserStatus);
+        expect(response).toMatchObject(expectedValue);
+        expect(clientSpy).toHaveBeenCalledWith(
+            "localhost/api/v1/users/change_settings/",
+            {
+                "username": "newUsername"
+            },
+            {
+                "headers":  {
+                    "Authorization": "Token 12345"
+                }
+            }
+        );
+    });
+
+    it("Test failed call", async () => {
+        mockedAxios.onPost("localhost/api/v1/users/change_settings/").reply(400);
+        
+        await expect(repository.changeSettings("newUsername")).rejects.toThrow();
+        expect(clientSpy).toHaveBeenCalled();
+    });
+});
+
+
+describe("Test changePassword endpoint", () => {
+    let repository: UserRepository = userRepositoryFixture();
+    let _client = repository['_sessionManager']['_client'];
+    let mockedAxios = new MockAdapter(_client);
+    const clientSpy = jest.spyOn(_client, 'post');
+
+    beforeEach(() => {
+        clientSpy.mockClear();
+    });
+
+    it("Test successfull call", async () => {
+        const expectedValue = "success";    
+        mockedAxios.onPost("localhost/api/v1/users/change_password/").reply(200, expectedValue);
+        
+        let response = await repository.changePassword("password1", "password2", "password2");
+        expect(response.data).toEqual(expectedValue);
+        expect(clientSpy).toHaveBeenCalledWith(
+            "localhost/api/v1/users/change_password/",
+            {
+                "oldPassword": "password1",
+                "newPassword1": "password2",
+                "newPassword2": "password2"
+            },
+            {
+                "headers":  {
+                    "Authorization": "Token 12345"
+                }
+            }
+        );
+    });
+
+    it("Test failed call", async () => {
+        mockedAxios.onPost("localhost/api/v1/users/change_password/").reply(400);
+        
+        await expect(repository.changePassword("password1", "password2", "password2")).rejects.toThrow();
+        expect(clientSpy).toHaveBeenCalled();
+    });
+});
+
+
 describe("Test resetPassword endpoint", () => {
     let repository: UserRepository = userRepositoryFixture();
     let _client = repository['_sessionManager']['_client'];
@@ -320,7 +405,6 @@ describe("Test getCurrentUserStatus endpoint", () => {
         const expectedValue = {
             "id": 3,
             "username": "test",
-            "profile": 1,
             "exp": 20
         }
 
