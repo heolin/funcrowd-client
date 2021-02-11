@@ -108,7 +108,160 @@ describe("Test register endpoint", () => {
 });
 
 
-describe("Test login mturk endpoint", () => {
+describe("Test resetPassword endpoint", () => {
+    let repository: UserRepository = userRepositoryFixture();
+    let _client = repository['_sessionManager']['_client'];
+    let mockedAxios = new MockAdapter(_client);
+    const clientSpy = jest.spyOn(_client, 'post');
+
+    beforeEach(() => {
+        clientSpy.mockClear();
+    });
+
+    it("Test successfull call", async () => {
+        const expectedValue = "success";    
+        mockedAxios.onPost("localhost/api/v1/users/reset_password/").reply(200, expectedValue);
+        
+        let response = await repository.resetPassword("test@email");
+
+        expect(response.data).toEqual(expectedValue);
+        expect(clientSpy).toHaveBeenCalledWith(
+            "localhost/api/v1/users/reset_password/",
+            {
+                "email": "test@email"
+            },
+            undefined
+        );
+    });
+
+    it("Test failed call", async () => {
+        mockedAxios.onPost("localhost/api/v1/users/reset_password/").reply(400);
+        
+        await expect(repository.resetPassword("test@email")).rejects.toThrow();
+        expect(clientSpy).toHaveBeenCalled();
+    });
+});
+
+
+describe("Test changePasswordWithResetToken endpoint", () => {
+    let repository: UserRepository = userRepositoryFixture();
+    let _client = repository['_sessionManager']['_client'];
+    let mockedAxios = new MockAdapter(_client);
+    const clientSpy = jest.spyOn(_client, 'post');
+
+    beforeEach(() => {
+        clientSpy.mockClear();
+    });
+
+    it("Test successfull call", async () => {
+        const expectedValue = "success";    
+        mockedAxios.onPost("localhost/api/v1/users/reset_password/token/").reply(200, expectedValue);
+        
+        let response = await repository.changePasswordWithResetToken(
+            "resetToken", "password", "password");
+
+        expect(response.data).toEqual(expectedValue);
+        expect(clientSpy).toHaveBeenCalledWith(
+            "localhost/api/v1/users/reset_password/token/",
+            {
+                "token": "resetToken",
+                "password1": "password",
+                "password2": "password"
+            },
+            undefined
+        );
+    });
+
+    it("Test failed call", async () => {
+        mockedAxios.onPost("localhost/api/v1/users/reset_password/token/").reply(400);
+        
+        await expect(repository.changePasswordWithResetToken(
+            "resetToken", "password", "password")).rejects.toThrow();
+        expect(clientSpy).toHaveBeenCalled();
+    });
+});
+
+
+describe("Test activate endpoint", () => {
+    let repository: UserRepository = userRepositoryFixture();
+    let _client = repository['_sessionManager']['_client'];
+    let mockedAxios = new MockAdapter(_client);
+    const clientSpy = jest.spyOn(_client, 'post');
+
+    beforeEach(() => {
+        clientSpy.mockClear();
+    });
+
+    it("Test successfull call", async () => {
+        const expectedValue = {
+            "id": 1,
+            "email": "test@email.com",
+            "username": "test",
+            "token": "token",
+            "profile": 1,
+            "group": 1,
+            "exp": 20
+        }
+
+        mockedAxios.onPost("localhost/api/v1/users/activate/").reply(200, expectedValue);
+        
+        let response = await repository.activateAccount("activateToken");
+        expect(response).toBeInstanceOf(User);
+        expect(response).toMatchObject(expectedValue);
+        expect(clientSpy).toHaveBeenCalledWith(
+            "localhost/api/v1/users/activate/",
+            {
+                "token": "activateToken"
+            },
+            undefined
+        );
+    });
+    
+    it("Test failed call", async () => {
+        mockedAxios.onPost("localhost/api/v1/users/activate/").reply(400);
+
+        await expect(repository.activateAccount("activateToken")).rejects.toThrow();
+        expect(clientSpy).toHaveBeenCalled();
+    });
+});
+
+
+describe("Test resetActivationToken endpoint", () => {
+    let repository: UserRepository = userRepositoryFixture();
+    let _client = repository['_sessionManager']['_client'];
+    let mockedAxios = new MockAdapter(_client);
+    const clientSpy = jest.spyOn(_client, 'post');
+
+    beforeEach(() => {
+        clientSpy.mockClear();
+    });
+
+    it("Test successfull call", async () => {
+        const expectedValue = "success";    
+        mockedAxios.onPost("localhost/api/v1/users/activate/renew/").reply(200, expectedValue);
+        
+        let response = await repository.resetActivationToken("token");
+
+        expect(response.data).toEqual(expectedValue);
+        expect(clientSpy).toHaveBeenCalledWith(
+            "localhost/api/v1/users/activate/renew/",
+            {
+                "token": "token"
+            },
+            undefined
+        );
+    });
+
+    it("Test failed call", async () => {
+        mockedAxios.onPost("localhost/api/v1/users/activate/renew/").reply(400);
+        
+        await expect(repository.resetActivationToken("token")).rejects.toThrow();
+        expect(clientSpy).toHaveBeenCalled();
+    });
+});
+
+
+describe("Test loginMturk endpoint", () => {
     let repository: UserRepository = userRepositoryFixture();
     let _client = repository['_sessionManager']['_client'];
     let mockedAxios = new MockAdapter(_client);
@@ -153,7 +306,7 @@ describe("Test login mturk endpoint", () => {
 });
 
 
-describe("Test get current user status", () => {
+describe("Test getCurrentUserStatus endpoint", () => {
     let repository: UserRepository = userRepositoryFixture();
     let _client = repository['_sessionManager']['_client'];
     let mockedAxios = new MockAdapter(_client);
@@ -195,7 +348,7 @@ describe("Test get current user status", () => {
 });
 
 
-describe("Test get current user details", () => {
+describe("Test getCurrentUserDetails endpoint", () => {
     let repository: UserRepository = userRepositoryFixture();
     let _client = repository['_sessionManager']['_client'];
     let mockedAxios = new MockAdapter(_client);
@@ -240,7 +393,7 @@ describe("Test get current user details", () => {
 });
 
 
-describe("Test get current user metrics", () => {
+describe("Test getCurrentUserMetrics endpoint", () => {
     let repository: UserRepository = userRepositoryFixture();
     let _client = repository['_sessionManager']['_client'];
     let mockedAxios = new MockAdapter(_client);

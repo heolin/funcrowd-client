@@ -143,14 +143,14 @@ export default class UserRepository {
     }
 
     /**
-     * @param token
+     * @param activationToken
      * @returns
      */
-    async resetActivationToken(token: string): Promise<AxiosResponse> {       
+    async resetActivationToken(activationToken: string): Promise<AxiosResponse> {       
         const response = await this._sessionManager.post(
             'users/activate/renew/',
             {
-                token: token,
+                token: activationToken,
             },
             false
         );
