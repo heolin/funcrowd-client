@@ -10,7 +10,7 @@ export interface ITaskProgress {
 }
 
 /**
- * Stores information about user's progress for a given task
+ * Stores information about user's progress for a given Task.
  */
 export default class TaskProgress implements ITaskProgress {
     constructor(public taskId: number, public itemsDone: number, public itemsCount: number,

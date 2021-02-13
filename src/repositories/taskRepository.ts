@@ -3,10 +3,17 @@ import TaskProgress, { ITaskProgress } from "../models/task/taskProgress";
 import SessionManager from "../session/sessionManager";
 
 
+/**
+ * 
+ */
 export default class TaskRepository {
     
     constructor(private _sessionManager: SessionManager) {}
 
+    /**
+     * 
+     * @param missionId 
+     */
     async list(missionId: number): Promise<Task[]> {
         const response = await this._sessionManager.get(
             "missions/" + missionId + "/tasks/");
@@ -16,6 +23,10 @@ export default class TaskRepository {
         return tasks;
     }
 
+    /**
+     * 
+     * @param taskId 
+     */
     async get(taskId: number): Promise<Task> {
         const response = await this._sessionManager.get(
             "tasks/" + taskId + "/");
@@ -24,6 +35,10 @@ export default class TaskRepository {
         return task;
     }
 
+    /**
+     * 
+     * @param missionId 
+     */
     async progressList(missionId: number): Promise<TaskProgress[]> {
         const response = await this._sessionManager.get(
             "missions/" + missionId + "/tasks/progress");
@@ -33,6 +48,10 @@ export default class TaskRepository {
         return tasks;
     }
 
+    /**
+     * 
+     * @param taskId 
+     */
     async progress(taskId: number): Promise<TaskProgress> {
         const response = await this._sessionManager.get(
             "tasks/" + taskId + "/progress/");

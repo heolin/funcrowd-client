@@ -1,26 +1,30 @@
 
+/**
+ * Interface storing the UserMetrics data
+ */
 export interface IUserMetrics {
+    /** Id of the user */
     userId: number,
+    /** Total number of annotated documents */
     annotatedDocuments: number,
+    /** Total number of annotations with a high agreement score */
     highAgreementCount: number,
+    /** Percentage of the high agreement annotations to all annotations */
     highAgreementPercentage: number,
+    /** Position of the user in the ranking created based on users' average agreement */
     agreementRankingPosition: number,
+    /** Percentage position of the user in the agreement ranking */
     agreementRankingPercentage: number,
+    /** Number of different missions with at least one user's annotation */
     annotatedMissions: number,
+    /** Number of different tasks with at least one user's annotation */
     annotatedTasks: number
 }
 
 /**
  * Stores basic quality metrics of the user.
- *
- * Statistic metricss:
- * - annotatedDocument - total number of annotated documents
- * - highAgreementCount - total number of annotations with a high agreement score
- * - highAgreementPerentage - percentage of the high agreement annotations to all annotations
- * - agreementRankingPosition - position of the user in the ranking created based on users' average agreement
- * - agreementRankingPercentage - percentage position of the user in the agreement ranking
- * - annotatedMissions - number of different missions with at least one user's annotation
- * - annotatedTasks - number of different tasks with at least one user's annotation
+ * Metrics are recalculate automatically after the annotations, so
+ * they are always up to date.
  */
 export default class UserMetrics implements IUserMetrics {
     constructor(public userId: number,

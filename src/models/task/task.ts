@@ -13,7 +13,8 @@ export interface ITask{
 }
 
 /**
- * Stores the definition of a task
+ * Stores the definition of a Task.
+ * Task object is used to group multiple Items, usually of the same structure.
  */
 export default class Task implements Task {
     constructor(public id: number, public missionId: number, public name: string,
