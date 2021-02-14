@@ -1,3 +1,5 @@
+import AnnotationResponse, { IAnnotationResponse } from "../models/annotation/annotationResponse";
+import Item, { IItem } from "../models/item/item";
 import SessionManager from "../session/sessionManager";
 
 
@@ -7,4 +9,24 @@ import SessionManager from "../session/sessionManager";
 export default class ItemRepository {
     
     constructor(private _sessionManager: SessionManager) {}
+
+
+    async nextItem(taskId: number): Promise<Item> {   
+        const response = await this._sessionManager.get("/api/v1/tasks/" + taskId + "/next_item/");
+        return Item.fromJson(response.data as IItem);
+    }
+
+    async subsequentItem(itemId: number): Promise<Item> { 
+        const response = await this._sessionManager.get("/api/v1/items/" + itemId+ "/next_item/");
+        return Item.fromJson(response.data as IItem);
+    }
+
+    async postAnnotation(itemId: number, payload: Object) {
+
+        const response = await this._sessionManager.post(
+            "/api/v1/items/" + itemId+ "/annotation/",
+            payload    
+        );
+        return AnnotationResponse.fromJson(response.data as IAnnotationResponse);
+    } 
 }

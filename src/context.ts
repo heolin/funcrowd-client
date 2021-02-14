@@ -1,15 +1,22 @@
+import AchievementRepository from "./repositories/achievementRepository";
+import BountyRepository from "./repositories/bountyRepository";
+import ItemRepository from "./repositories/itemRepository";
 import MissionRepository from "./repositories/missionRepository";
 import StorageRepository from "./repositories/storageRepository";
 import TaskRepository from "./repositories/taskRepository";
 import UserRepository from "./repositories/userRepository";
 import SessionManager from "./session/sessionManager"
 
+
 class ContextRepositories {
     constructor(
         public users: UserRepository,
+        public bounties: BountyRepository,
         public missions: MissionRepository,
         public tasks: TaskRepository,
-        public storages: StorageRepository
+        public items: ItemRepository,
+        public storages: StorageRepository,
+        public achievements: AchievementRepository
     ) {}
 }
 
@@ -20,9 +27,12 @@ export default class Context {
     constructor(public sessionManager: SessionManager) {
         this.repositories = new ContextRepositories(
             new UserRepository(sessionManager),
+            new BountyRepository(sessionManager),
             new MissionRepository(sessionManager),
             new TaskRepository(sessionManager),
-            new StorageRepository(sessionManager)
+            new ItemRepository(sessionManager),
+            new StorageRepository(sessionManager),
+            new AchievementRepository(sessionManager)
         );
     }
 }

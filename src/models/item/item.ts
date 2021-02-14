@@ -1,13 +1,19 @@
 
-export default class Item {
-    itemId: number;
-    data: string | undefined;
-    schema: string;
+export interface IItem {
+
+}
 
 
+export default class Item implements IItem {
     constructor() {
-        this.data = undefined;
-        this.itemId = 0;
-        this.schema = "";
+    
+    }
+
+    static fromJson(data: IItem) {
+        return new Item();
+    }
+
+    annotate() {
+        
     }
 }
