@@ -10,17 +10,29 @@ export default class ItemRepository {
     
     constructor(private _sessionManager: SessionManager) {}
 
-
+    /**
+     * 
+     * @param taskId 
+     */
     async nextItem(taskId: number): Promise<Item> {   
         const response = await this._sessionManager.get("/api/v1/tasks/" + taskId + "/next_item/");
         return Item.fromJson(response.data as IItem);
     }
 
+    /**
+     * 
+     * @param itemId 
+     */
     async subsequentItem(itemId: number): Promise<Item> { 
         const response = await this._sessionManager.get("/api/v1/items/" + itemId+ "/next_item/");
         return Item.fromJson(response.data as IItem);
     }
 
+    /**
+     * 
+     * @param itemId 
+     * @param payload 
+     */
     async postAnnotation(itemId: number, payload: Object) {
 
         const response = await this._sessionManager.post(
