@@ -121,7 +121,9 @@
     "typescript": "^3.0.3"
   },
   "dependencies": {
+    "@types/proper-url-join": "^2.0.0",
     "axios": "^0.21.1",
-    "axios-case-converter": "^0.7.0"
+    "axios-case-converter": "^0.7.0",
+    "proper-url-join": "^2.1.1"
   }
 }

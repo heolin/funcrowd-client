@@ -37,13 +37,13 @@ describe("Test client", () => {
     const _client = manager['_client'];
     const clientSpy = jest.spyOn(_client, 'get');
     const mockedAxios = new MockAdapter(_client);
-    mockedAxios.onGet("localhost/api/v1/test").reply(200);
+    mockedAxios.onGet("/localhost/api/v1/test/").reply(200);
 
     it("Test successfull GET call", () => {
 
         manager.get('test');
         expect(clientSpy).toHaveBeenCalledWith(
-            "localhost/api/v1/test",
+            "/localhost/api/v1/test/",
             undefined
         );
     });
@@ -55,7 +55,7 @@ describe("Test client with logged user", () => {
     const _client = manager['_client'];
     const clientSpy = jest.spyOn(_client, 'get');
     const mockedAxios = new MockAdapter(_client);
-    mockedAxios.onGet("localhost/api/v1/test").reply(200);
+    mockedAxios.onGet("/localhost/api/v1/test/").reply(200);
     const user: User = userFixture();
     manager.setupUser(user);
 
@@ -63,7 +63,7 @@ describe("Test client with logged user", () => {
         
         manager.get('test');
         expect(clientSpy).toHaveBeenCalledWith(
-            "localhost/api/v1/test",
+            "/localhost/api/v1/test/",
             {
                 "headers":  {
                     "Authorization": "Token 12345"
@@ -75,7 +75,7 @@ describe("Test client with logged user", () => {
     it("Test force no config", () => {
         manager.get('test', false);
         expect(clientSpy).toHaveBeenCalledWith(
-            "localhost/api/v1/test",
+            "/localhost/api/v1/test/",
             undefined
         );
     });

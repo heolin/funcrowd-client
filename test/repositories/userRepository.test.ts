@@ -44,13 +44,13 @@ describe("Test login endpoint", () => {
             "exp": 20
         }
 
-        mockedAxios.onPost("localhost/api/v1/users/login/").reply(200, expectedValue);
+        mockedAxios.onPost("/localhost/api/v1/users/login/").reply(200, expectedValue);
         
         let response = await repository.login("test@email.com", "password");
         expect(response).toBeInstanceOf(User);
         expect(response).toMatchObject(expectedValue);
         expect(clientSpy).toHaveBeenCalledWith(
-            "localhost/api/v1/users/login/",
+            "/localhost/api/v1/users/login/",
             {
                 "email": "test@email.com",
                 "password": "password"
@@ -60,7 +60,7 @@ describe("Test login endpoint", () => {
     });
     
     it("Test failed call", async () => {
-        mockedAxios.onPost("localhost/api/v1/users/login/").reply(403);
+        mockedAxios.onPost("/localhost/api/v1/users/login/").reply(403);
 
         await expect(repository.login("test@email.com", "wrongpassword")).rejects.toThrow();
         expect(clientSpy).toHaveBeenCalled();
@@ -80,14 +80,14 @@ describe("Test register endpoint", () => {
 
     it("Test successfull call", async () => {
         const expectedValue = "success";    
-        mockedAxios.onPost("localhost/api/v1/users/register/").reply(204, expectedValue);
+        mockedAxios.onPost("/localhost/api/v1/users/register/").reply(204, expectedValue);
         
         let response = await repository.register(
             "test", "test@email.com", "password", "password");
 
         expect(response.data).toEqual(expectedValue);
         expect(clientSpy).toHaveBeenCalledWith(
-            "localhost/api/v1/users/register/",
+            "/localhost/api/v1/users/register/",
             {
                 "username": "test",
                 "email": "test@email.com",
@@ -99,7 +99,7 @@ describe("Test register endpoint", () => {
     });
 
     it("Test failed call", async () => {
-        mockedAxios.onPost("localhost/api/v1/users/register/").reply(400);
+        mockedAxios.onPost("/localhost/api/v1/users/register/").reply(400);
         
         await expect(repository.register(
             "test", "test@email.com", "password", "password")).rejects.toThrow();
@@ -125,14 +125,14 @@ describe("Test changeSettings endpoint", () => {
             "exp": 20
         }
 
-        mockedAxios.onPost("localhost/api/v1/users/change_settings/").reply(200, expectedValue);
+        mockedAxios.onPost("/localhost/api/v1/users/change_settings/").reply(200, expectedValue);
         
         let response = await repository.changeSettings("newUsername");
 
         expect(response).toBeInstanceOf(UserStatus);
         expect(response).toMatchObject(expectedValue);
         expect(clientSpy).toHaveBeenCalledWith(
-            "localhost/api/v1/users/change_settings/",
+            "/localhost/api/v1/users/change_settings/",
             {
                 "username": "newUsername"
             },
@@ -145,7 +145,7 @@ describe("Test changeSettings endpoint", () => {
     });
 
     it("Test failed call", async () => {
-        mockedAxios.onPost("localhost/api/v1/users/change_settings/").reply(400);
+        mockedAxios.onPost("/localhost/api/v1/users/change_settings/").reply(400);
         
         await expect(repository.changeSettings("newUsername")).rejects.toThrow();
         expect(clientSpy).toHaveBeenCalled();
@@ -165,12 +165,12 @@ describe("Test changePassword endpoint", () => {
 
     it("Test successfull call", async () => {
         const expectedValue = "success";    
-        mockedAxios.onPost("localhost/api/v1/users/change_password/").reply(200, expectedValue);
+        mockedAxios.onPost("/localhost/api/v1/users/change_password/").reply(200, expectedValue);
         
         let response = await repository.changePassword("password1", "password2", "password2");
         expect(response.data).toEqual(expectedValue);
         expect(clientSpy).toHaveBeenCalledWith(
-            "localhost/api/v1/users/change_password/",
+            "/localhost/api/v1/users/change_password/",
             {
                 "oldPassword": "password1",
                 "newPassword1": "password2",
@@ -185,7 +185,7 @@ describe("Test changePassword endpoint", () => {
     });
 
     it("Test failed call", async () => {
-        mockedAxios.onPost("localhost/api/v1/users/change_password/").reply(400);
+        mockedAxios.onPost("/localhost/api/v1/users/change_password/").reply(400);
         
         await expect(repository.changePassword("password1", "password2", "password2")).rejects.toThrow();
         expect(clientSpy).toHaveBeenCalled();
@@ -205,13 +205,13 @@ describe("Test resetPassword endpoint", () => {
 
     it("Test successfull call", async () => {
         const expectedValue = "success";    
-        mockedAxios.onPost("localhost/api/v1/users/reset_password/").reply(200, expectedValue);
+        mockedAxios.onPost("/localhost/api/v1/users/reset_password/").reply(200, expectedValue);
         
         let response = await repository.resetPassword("test@email");
 
         expect(response.data).toEqual(expectedValue);
         expect(clientSpy).toHaveBeenCalledWith(
-            "localhost/api/v1/users/reset_password/",
+            "/localhost/api/v1/users/reset_password/",
             {
                 "email": "test@email"
             },
@@ -220,7 +220,7 @@ describe("Test resetPassword endpoint", () => {
     });
 
     it("Test failed call", async () => {
-        mockedAxios.onPost("localhost/api/v1/users/reset_password/").reply(400);
+        mockedAxios.onPost("/localhost/api/v1/users/reset_password/").reply(400);
         
         await expect(repository.resetPassword("test@email")).rejects.toThrow();
         expect(clientSpy).toHaveBeenCalled();
@@ -240,14 +240,14 @@ describe("Test changePasswordWithResetToken endpoint", () => {
 
     it("Test successfull call", async () => {
         const expectedValue = "success";    
-        mockedAxios.onPost("localhost/api/v1/users/reset_password/token/").reply(200, expectedValue);
+        mockedAxios.onPost("/localhost/api/v1/users/reset_password/token/").reply(200, expectedValue);
         
         let response = await repository.changePasswordWithResetToken(
             "resetToken", "password", "password");
 
         expect(response.data).toEqual(expectedValue);
         expect(clientSpy).toHaveBeenCalledWith(
-            "localhost/api/v1/users/reset_password/token/",
+            "/localhost/api/v1/users/reset_password/token/",
             {
                 "token": "resetToken",
                 "password1": "password",
@@ -258,7 +258,7 @@ describe("Test changePasswordWithResetToken endpoint", () => {
     });
 
     it("Test failed call", async () => {
-        mockedAxios.onPost("localhost/api/v1/users/reset_password/token/").reply(400);
+        mockedAxios.onPost("/localhost/api/v1/users/reset_password/token/").reply(400);
         
         await expect(repository.changePasswordWithResetToken(
             "resetToken", "password", "password")).rejects.toThrow();
@@ -288,13 +288,13 @@ describe("Test activate endpoint", () => {
             "exp": 20
         }
 
-        mockedAxios.onPost("localhost/api/v1/users/activate/").reply(200, expectedValue);
+        mockedAxios.onPost("/localhost/api/v1/users/activate/").reply(200, expectedValue);
         
         let response = await repository.activateAccount("activateToken");
         expect(response).toBeInstanceOf(User);
         expect(response).toMatchObject(expectedValue);
         expect(clientSpy).toHaveBeenCalledWith(
-            "localhost/api/v1/users/activate/",
+            "/localhost/api/v1/users/activate/",
             {
                 "token": "activateToken"
             },
@@ -303,7 +303,7 @@ describe("Test activate endpoint", () => {
     });
     
     it("Test failed call", async () => {
-        mockedAxios.onPost("localhost/api/v1/users/activate/").reply(400);
+        mockedAxios.onPost("/localhost/api/v1/users/activate/").reply(400);
 
         await expect(repository.activateAccount("activateToken")).rejects.toThrow();
         expect(clientSpy).toHaveBeenCalled();
@@ -323,13 +323,13 @@ describe("Test resetActivationToken endpoint", () => {
 
     it("Test successfull call", async () => {
         const expectedValue = "success";    
-        mockedAxios.onPost("localhost/api/v1/users/activate/renew/").reply(200, expectedValue);
+        mockedAxios.onPost("/localhost/api/v1/users/activate/renew/").reply(200, expectedValue);
         
         let response = await repository.resetActivationToken("token");
 
         expect(response.data).toEqual(expectedValue);
         expect(clientSpy).toHaveBeenCalledWith(
-            "localhost/api/v1/users/activate/renew/",
+            "/localhost/api/v1/users/activate/renew/",
             {
                 "token": "token"
             },
@@ -338,7 +338,7 @@ describe("Test resetActivationToken endpoint", () => {
     });
 
     it("Test failed call", async () => {
-        mockedAxios.onPost("localhost/api/v1/users/activate/renew/").reply(400);
+        mockedAxios.onPost("/localhost/api/v1/users/activate/renew/").reply(400);
         
         await expect(repository.resetActivationToken("token")).rejects.toThrow();
         expect(clientSpy).toHaveBeenCalled();
@@ -367,14 +367,14 @@ describe("Test loginMturk endpoint", () => {
             "exp": 20
         }
 
-        mockedAxios.onPost("localhost/api/v1/users/mturk/").reply(200, expectedValue);
+        mockedAxios.onPost("/localhost/api/v1/users/mturk/").reply(200, expectedValue);
         
         let response = await repository.loginMturk("WORKERID0001");
 
         expect(response).toBeInstanceOf(User);
         expect(response).toMatchObject(expectedValue);
         expect(clientSpy).toHaveBeenCalledWith(
-            "localhost/api/v1/users/mturk/",
+            "/localhost/api/v1/users/mturk/",
             {
                 "workerId": "WORKERID0001"
             },
@@ -383,7 +383,7 @@ describe("Test loginMturk endpoint", () => {
     });
 
     it("Test failed call", async () => {
-        mockedAxios.onPost("localhost/api/v1/users/mturk/").reply(400);
+        mockedAxios.onPost("/localhost/api/v1/users/mturk/").reply(400);
         
         await expect(repository.loginMturk("WORKERID0001")).rejects.toThrow();
         expect(clientSpy).toHaveBeenCalled();
@@ -408,13 +408,13 @@ describe("Test getCurrentUserStatus endpoint", () => {
             "exp": 20
         }
 
-        mockedAxios.onGet("localhost/api/v1/users/status/").reply(200, expectedValue);
+        mockedAxios.onGet("/localhost/api/v1/users/status/").reply(200, expectedValue);
         
         let response = await repository.getCurrentUserStatus();
         expect(response).toBeInstanceOf(UserStatus);
         expect(response).toMatchObject(expectedValue);
         expect(clientSpy).toHaveBeenCalledWith(
-            "localhost/api/v1/users/status/",
+            "/localhost/api/v1/users/status/",
             {
                 "headers":  {
                     "Authorization": "Token 12345"
@@ -424,7 +424,7 @@ describe("Test getCurrentUserStatus endpoint", () => {
     });
 
     it("Test failed call", async () => {
-        mockedAxios.onGet("localhost/api/v1/users/status/").reply(400);
+        mockedAxios.onGet("/localhost/api/v1/users/status/").reply(400);
         
         await expect(repository.getCurrentUserStatus()).rejects.toThrow();
         expect(clientSpy).toHaveBeenCalled();
@@ -453,13 +453,13 @@ describe("Test getCurrentUserDetails endpoint", () => {
             "exp": 20
         }
 
-        mockedAxios.onGet("localhost/api/v1/users/details/").reply(200, expectedValue);
+        mockedAxios.onGet("/localhost/api/v1/users/details/").reply(200, expectedValue);
         
         let response = await repository.getCurrentUserDetails();
         expect(response).toBeInstanceOf(User);
         expect(response).toMatchObject(expectedValue);
         expect(clientSpy).toHaveBeenCalledWith(
-            "localhost/api/v1/users/details/",
+            "/localhost/api/v1/users/details/",
             {
                 "headers":  {
                     "Authorization": "Token 12345"
@@ -469,7 +469,7 @@ describe("Test getCurrentUserDetails endpoint", () => {
     });
 
     it("Test failed call", async () => {
-        mockedAxios.onGet("localhost/api/v1/users/details/").reply(400);
+        mockedAxios.onGet("/localhost/api/v1/users/details/").reply(400);
         
         await expect(repository.getCurrentUserDetails()).rejects.toThrow();
         expect(clientSpy).toHaveBeenCalled();
@@ -499,13 +499,13 @@ describe("Test getCurrentUserMetrics endpoint", () => {
             "annotatedTasks": 1
         }
 
-        mockedAxios.onGet("localhost/api/v1/stats/users/1/").reply(200, expectedValue);
+        mockedAxios.onGet("/localhost/api/v1/stats/users/1/").reply(200, expectedValue);
         
         let response = await repository.getUserMetrics(1);
         expect(response).toBeInstanceOf(UserMetrics);
         expect(response).toMatchObject(expectedValue);
         expect(clientSpy).toHaveBeenCalledWith(
-            "localhost/api/v1/stats/users/1/",
+            "/localhost/api/v1/stats/users/1/",
             {
                 "headers":  {
                     "Authorization": "Token 12345"
@@ -515,7 +515,7 @@ describe("Test getCurrentUserMetrics endpoint", () => {
     });
 
     it("Test failed call", async () => {
-        mockedAxios.onGet("localhost/api/v1/stats/users/1/").reply(400);
+        mockedAxios.onGet("/localhost/api/v1/stats/users/1/").reply(400);
         
         await expect(repository.getUserMetrics(1)).rejects.toThrow();
         expect(clientSpy).toHaveBeenCalled();

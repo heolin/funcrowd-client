@@ -1,8 +1,9 @@
 import ConfigBuilder from "./configBuilder";
 import User from "../models/user/user";
-import {UserUndefinedError} from "./errors";
 import applyCaseMiddleware from 'axios-case-converter';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import urlJoin from 'proper-url-join';
+ 
 
 const API_URL = "/api/v1/";
 
@@ -94,7 +95,8 @@ export default class SessionManager {
      * @return generated url to the backend API
      */
     private _createUrl(endpoint: string): string {
-        return this._baseUrl + API_URL + endpoint;
+        let url = urlJoin(this._baseUrl, API_URL, endpoint, { trailingSlash: true });
+        return url;
     }
 
     /**
