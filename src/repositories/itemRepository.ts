@@ -15,7 +15,7 @@ export default class ItemRepository {
      * @param taskId 
      */
     async nextItem(taskId: number): Promise<Item> {   
-        const response = await this._sessionManager.get("/api/v1/tasks/" + taskId + "/next_item/");
+        const response = await this._sessionManager.get("tasks/" + taskId + "/next_item/");
         return Item.fromJson(response.data as IItem);
     }
 
@@ -24,7 +24,7 @@ export default class ItemRepository {
      * @param itemId 
      */
     async subsequentItem(itemId: number): Promise<Item> { 
-        const response = await this._sessionManager.get("/api/v1/items/" + itemId+ "/next_item/");
+        const response = await this._sessionManager.get("items/" + itemId+ "/next_item/");
         return Item.fromJson(response.data as IItem);
     }
 
@@ -35,8 +35,7 @@ export default class ItemRepository {
      */
     async postAnnotation(itemId: number, payload: Object) {
 
-        const response = await this._sessionManager.post(
-            "/api/v1/items/" + itemId+ "/annotation/",
+        const response = await this._sessionManager.post("items/" + itemId+ "/annotation/",
             payload    
         );
         return AnnotationResponse.fromJson(response.data as IAnnotationResponse);

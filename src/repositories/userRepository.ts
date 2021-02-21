@@ -33,6 +33,7 @@ export default class UserRepository {
 
     /**
      * Creates a new account for the user based on provided credentials.
+     * Using this endpoint will send an activation email to the provided email.
      * @param username - user's username
      * @param email - user's email
      * @param password1 - user's password
@@ -55,8 +56,8 @@ export default class UserRepository {
     }
 
     /**
-     * 
-     * @param username
+     * Used to change user settings. At the moment it supports only user's username.
+     * @param username - a new username for the user
      * @returns
      */
     async changeSettings(username: string): Promise<UserStatus> {
@@ -71,9 +72,10 @@ export default class UserRepository {
     }
 
     /**
-     * @param oldPassword
-     * @param newPassword1
-     * @param newPassword2
+     * Used to replace user's password
+     * @param oldPassword - current password
+     * @param newPassword1 - new password
+     * @param newPassword2 - repeated the same password
      * @returns
      */
     async changePassword(oldPassword: string,
@@ -91,7 +93,9 @@ export default class UserRepository {
     }
 
     /**
-     * @param email
+     * Activates user's reset email. An email with a reset link will be
+     * sent to the provided email.
+     * @param email - email that will receive a reset link
      * @returns
      */
     async resetPassword(email: string): Promise<AxiosResponse> {
@@ -106,9 +110,12 @@ export default class UserRepository {
     }
 
     /**
-     * @param resetToken
-     * @param password1
-     * @param password2
+     * Used to reset password for a user that is not logged in. 
+     * Instead of user's auth token it's uses a reset token that is
+     * provided in a reset email.
+     * @param resetToken - reset token
+     * @param password1 - new password
+     * @param password2 - repeated new password
      * @returns
      */
     async changePasswordWithResetToken(resetToken: string, password1: string,
@@ -126,7 +133,9 @@ export default class UserRepository {
     }
 
     /**
-     * @param activationToken
+     * Used to activate a new account using a token provided in
+     * an activation email.
+     * @param activationToken - activation email
      * @returns
      */
     async activateAccount(activationToken: string): Promise<User> { 
@@ -142,6 +151,8 @@ export default class UserRepository {
     }
 
     /**
+     * Used to reset an activation token. Using this endpoint will disable current
+     * activation token and resend an activation email with a new token.
      * @param activationToken
      * @returns
      */
@@ -157,15 +168,17 @@ export default class UserRepository {
     }
 
     /**
-     * @param workerId
+     * Used to login an Mturk user based only on its workerId
+     * @param workerId - id of an Mturk user, needs to fallow a specific format
+     * characteristic for the Mturk platform
      * @returns
      */
-    async loginMturk(workerUsername: string): Promise<User> {
+    async loginMturk(workerId: string): Promise<User> {
     
         const response = await this._sessionManager.post(
             'users/mturk/',
             {
-                workerId: workerUsername,
+                workerId: workerId,
             },
             false
         );
@@ -174,6 +187,7 @@ export default class UserRepository {
     }
 
     /**
+     * Get status of currently logged in user
      * @returns
      */
     async getCurrentUserStatus(): Promise<UserStatus> {    
@@ -185,6 +199,7 @@ export default class UserRepository {
     }
 
     /**
+     * Gets details of currently logged in user
      * @returns
      */
     async getCurrentUserDetails(): Promise<User> {
@@ -196,6 +211,7 @@ export default class UserRepository {
     }
 
     /**
+     * Get metrics of selected user
      * @param workerId
      * @returns
      */
