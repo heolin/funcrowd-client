@@ -1,6 +1,5 @@
 import ConfigBuilder from "./configBuilder";
 import User from "../models/user/user";
-import applyCaseMiddleware from 'axios-case-converter';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import urlJoin from 'proper-url-join';
  
@@ -34,7 +33,7 @@ export default class SessionManager {
     constructor(baseUrl: string, configBuilder: ConfigBuilder) {
         this._baseUrl = baseUrl;
         this._configBuilder = configBuilder;
-        this._client = applyCaseMiddleware(axios.create());
+        this._client = axios.create();
     }
 
     /**

@@ -84,19 +84,15 @@ async function test() {
     console.log("fields:")
     item.template.fields.map((field) => console.log(field));
 
+    console.log("XXXXXXXXXXX");
+    console.log(item.outputFields);
+
+    console.log("XXXXXXXXXXX");
+
+    console.log("4.2. Testing subsequentItem");
+    let item2 = await itemRepository.subsequentItem(item.id);
+
+    console.log(item2);
 }
 
 test();
-
-
-/*
-
-*/
-/*
-sessionManager.setupAuthToken(authToken);
-
-userRepository.getCurrentUserDetails().then((user) => {
-    user.token = authToken;
-    console.log(user);
-});
-*/
