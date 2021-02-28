@@ -4,7 +4,7 @@ export default class ItemField {
     private _source: Nullable<ItemField> = undefined;
 
     constructor(readonly template: ItemTemplateField,
-                readonly value: Object) {}
+                readonly value: any) {}
 
     setSource(source: ItemField): void {
         this._source = source;

@@ -33,7 +33,7 @@ describe("Test login endpoint", () => {
         clientSpy.mockClear();
     });
 
-    it("Test successfull call", async () => {
+    it("Test successful call", async () => {
         const expectedValue = {
             "id": 1,
             "email": "test@email.com",
@@ -78,7 +78,7 @@ describe("Test register endpoint", () => {
         clientSpy.mockClear();
     });
 
-    it("Test successfull call", async () => {
+    it("Test successful call", async () => {
         const expectedValue = "success";    
         mockedAxios.onPost("/localhost/api/v1/users/register/").reply(204, expectedValue);
         
@@ -118,7 +118,7 @@ describe("Test changeSettings endpoint", () => {
         clientSpy.mockClear();
     });
 
-    it("Test successfull call", async () => {
+    it("Test successful call", async () => {
         const expectedValue = {
             "id": 1,
             "username": "newUsername",
@@ -163,7 +163,7 @@ describe("Test changePassword endpoint", () => {
         clientSpy.mockClear();
     });
 
-    it("Test successfull call", async () => {
+    it("Test successful call", async () => {
         const expectedValue = "success";    
         mockedAxios.onPost("/localhost/api/v1/users/change_password/").reply(200, expectedValue);
         

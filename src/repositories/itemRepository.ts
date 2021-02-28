@@ -33,7 +33,7 @@ export default class ItemRepository {
      * @param itemId 
      * @param payload 
      */
-    async postAnnotation(itemId: number, payload: Object) {
+    async postAnnotation(itemId: number, payload: Record<string, any>) {
 
         const response = await this._sessionManager.post("items/" + itemId+ "/annotation/",
             payload    

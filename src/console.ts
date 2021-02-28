@@ -8,11 +8,15 @@ import UserRepository from "./repositories/userRepository";
 import ItemRepository from "./repositories/itemRepository";
 import ConfigBuilder from "./session/configBuilder";
 import SessionManager from "./session/sessionManager";
+import { stringify } from "querystring";
+import Annotation from "./models/annotation/annotation";
 
 
 async function test() {
         
     const backendUrl = "http://funcrowd-staging.herokuapp.com";
+    //const backendUrl = "http://192.168.0.32:8888";
+
     let sessionManager: SessionManager = new SessionManager(
         backendUrl,
         new ConfigBuilder()
@@ -84,15 +88,18 @@ async function test() {
     console.log("fields:")
     item.template.fields.map((field) => console.log(field));
 
-    console.log("XXXXXXXXXXX");
-    console.log(item.outputFields);
-
-    console.log("XXXXXXXXXXX");
-
-    console.log("4.2. Testing subsequentItem");
-    let item2 = await itemRepository.subsequentItem(item.id);
-
-    console.log(item2);
+    let annotation = new Annotation(item);
+    let outputField = item.outputFields[0];
+    if (outputField.source)
+        annotation.addOutput(outputField.name, outputField.source.value[0]);
+    console.log(annotation);
+    console.log("4.2. Testing postAnnotation");
+    let annotationResponse = await itemRepository.postAnnotation(
+        item.id,
+        annotation
+    );
+    console.log(annotationResponse);
+    console.log(annotationResponse.feedback.getScore('output'));
 }
 
 test();

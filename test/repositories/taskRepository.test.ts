@@ -1,6 +1,7 @@
 import TaskRepository from "../../src/repositories/taskRepository";
 import { sessionManagerAfterSetupFixture } from "../config/fixtures";
 import MockAdapter from 'axios-mock-adapter';
+import Task from "../../src/models/task/task";
 
 
 function taskRepositoryFixture() {
@@ -43,7 +44,7 @@ describe("Test list endpoint", () => {
         clientSpy.mockClear();
     });
 
-    it("Test successfull call", async () => {
+    it("Test successful call", async () => {
         const expectedValue = [
             {
                 "id": 1,
@@ -61,10 +62,11 @@ describe("Test list endpoint", () => {
         mockedAxios.onGet("/localhost/api/v1/missions/1/tasks/").reply(200, expectedValue);
         
         let response = await repository.list(1);
-        expect(response).toBeInstanceOf(Us);
-        expect(response).toMatchObject(expectedValue);
+        expect(response.length).toBe(1);
+        expect(response[0]).toBeInstanceOf(Task);
+        expect(response[0]).toMatchObject(expectedValue[0]);
         expect(clientSpy).toHaveBeenCalledWith(
-            "/localhost/api/v1/stats/users/1/",
+            "/localhost/api/v1/missions/1/tasks/",
             {
                 "headers":  {
                     "Authorization": "Token 12345"

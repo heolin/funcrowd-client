@@ -2,7 +2,7 @@ import ConfigBuilder from "./configBuilder";
 import User from "../models/user/user";
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import urlJoin from 'proper-url-join';
- 
+
 
 const API_URL = "/api/v1/";
 
