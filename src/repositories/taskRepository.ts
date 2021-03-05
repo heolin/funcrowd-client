@@ -41,7 +41,7 @@ export default class TaskRepository {
      */
     async progressList(missionId: number): Promise<TaskProgress[]> {
         const response = await this._sessionManager.get(
-            "missions/" + missionId + "/tasks/progress");
+            "missions/" + missionId + "/tasks/progress/");
 
         let tasks: TaskProgress[] = response.data.map(
             (data: Object) => TaskProgress.fromJson(data as ITaskProgress));
