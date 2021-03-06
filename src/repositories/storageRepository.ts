@@ -1,6 +1,16 @@
 import Storage, { IStorage } from "../models/storage/storage";
 import SessionManager from "../session/sessionManager";
 
+interface IStoragePayload {
+    data: any
+}
+
+interface IStorageBatchPayload {
+    key: string,
+    data: any
+}
+
+
 /**
  * 
  */
@@ -12,7 +22,7 @@ export default class StorageRepository {
      * 
      */
     async list(): Promise<Storage[]> {
-        const response = await this._sessionManager.get("/api/v1/users/storage/");
+        const response = await this._sessionManager.get("users/storage/");
         return response.data.map((data: Object) => Storage.fromJson(data as IStorage));
     }
 
@@ -20,26 +30,24 @@ export default class StorageRepository {
      * 
      */
     async get(key: string): Promise<Storage> {
-        const response = await this._sessionManager.get(
-            "/api/v1/users/storage/" + key + "/");
+        const response = await this._sessionManager.get("users/storage/" + key + "/");
         return Storage.fromJson(response.data);
     }
 
     /**
      * 
      */
-    async post(key: string, payload: Object): Promise<Storage> {
+    async post(key: string, payload: IStoragePayload): Promise<Storage> {
         const response = await this._sessionManager.post(
-            "/api/v1/users/storage/" + key + "/", payload);
+            "users/storage/" + key + "/", payload);
         return Storage.fromJson(response.data);
     }
     
     /**
      * 
      */
-    async postBatch(key: string, payload: Object): Promise<Storage[]> {
-        const response = await this._sessionManager.post(
-            "/api/v1/users/storage/" + key + "/", payload);
+    async postBatch(payload: IStorageBatchPayload[]): Promise<Storage[]> {
+        const response = await this._sessionManager.post("users/storage/", payload);
         return response.data.map((data: Object) => Storage.fromJson(data as IStorage));
     }
 

@@ -15,7 +15,7 @@ function taskRepositoryFixture() {
 describe("Test setting up TaskRepository", () => {
     let sessionManager = sessionManagerAfterSetupFixture();
     
-    it("Creating a MissionRepository object", () => {
+    it("Creating a StorageRepository object", () => {
         let repository: TaskRepository = new TaskRepository(sessionManager);
         expect(repository).toBeInstanceOf(TaskRepository);
     });

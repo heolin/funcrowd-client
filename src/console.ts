@@ -10,6 +10,8 @@ import ConfigBuilder from "./session/configBuilder";
 import SessionManager from "./session/sessionManager";
 import { stringify } from "querystring";
 import Annotation from "./models/annotation/annotation";
+import StorageRepository from "./repositories/storageRepository";
+import Storage from "./models/storage/storage";
 
 
 async function test() {
@@ -38,6 +40,34 @@ async function test() {
         console.log(error);
         return;
     }
+
+    console.log("1. Testing StorageRepository");
+    let storageRepository: StorageRepository = context.repositories.storages;
+        
+    console.log("1.2. Testing post");
+    let newStorage: Storage = await storageRepository.post(
+        "test", {"data": "test"});
+    console.log(newStorage);
+
+    console.log("1.2. Testing get");
+    let storage: Storage = await storageRepository.get("test");
+    console.log(storage);
+
+    console.log("1.2. Testing post");
+    let newStorages: Storage[] = await storageRepository.postBatch([
+        {"key": "test2", "data": "test2"},
+        {"key": "test3", "data": "test3"},
+    ]);
+    console.log(newStorages);
+
+    console.log("1.2. Testing list");
+    let storages: Storage[] = await storageRepository.list();
+    storages.map((storage) => {
+        console.log(storage);
+    });
+
+
+    return;
 
     console.log("1.2. Testing getCurrentUserDetails");
     let userDetails: User = await userRepository.getCurrentUserDetails();
@@ -90,8 +120,8 @@ async function test() {
 
     let annotation = new Annotation(item);
     let outputField = item.outputFields[0];
-    if (outputField.source)
-        annotation.addOutput(outputField.name, outputField.source.value[0]);
+    //if (outputField.source != null)
+    //     annotation.addOutput(outputField.name, outputField.source.value[0]);
     console.log(annotation);
     console.log("4.2. Testing postAnnotation");
     let annotationResponse = await itemRepository.postAnnotation(
