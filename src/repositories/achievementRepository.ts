@@ -13,7 +13,7 @@ export default class AchievementRepository {
      */
     async list(): Promise<Achievement[]> {
         let response = await this._sessionManager.get(
-            "/api/v1/achievements/");
+            "achievements/");
         return response.data.map((data: Object) => Achievement.fromJson(data as IAchievement));
     }
 
@@ -23,7 +23,7 @@ export default class AchievementRepository {
      */
     async listMission(missionId: number): Promise<Achievement[]> {
         let response = await this._sessionManager.get(
-            "/api/v1/achievements/mission/" + missionId + "/");
+            "achievements/mission/" + missionId + "/");
         return response.data.map((data: Object) => Achievement.fromJson(data as IAchievement));
     }
 
@@ -33,7 +33,7 @@ export default class AchievementRepository {
      */
     async listTask(taskId: number): Promise<Achievement[]> {
         let response = await this._sessionManager.get(
-            "/api/v1/achievements/task/" + taskId + "/");
+            "achievements/task/" + taskId + "/");
         return response.data.map((data: Object) => Achievement.fromJson(data as IAchievement));
     }
 
@@ -42,7 +42,7 @@ export default class AchievementRepository {
      */
     async listUnclosed(): Promise<Achievement[]> {
         let response = await this._sessionManager.get(
-            "/api/v1/achievements/unclosed/");
+            "achievements/unclosed/");
         return response.data.map((data: Object) => Achievement.fromJson(data as IAchievement));
     }
 }

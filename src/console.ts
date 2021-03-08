@@ -12,6 +12,8 @@ import { stringify } from "querystring";
 import Annotation from "./models/annotation/annotation";
 import StorageRepository from "./repositories/storageRepository";
 import Storage from "./models/storage/storage";
+import AchievementRepository from "./repositories/achievementRepository";
+import Achievement from "./models/achievement/achievement";
 
 
 async function test() {
@@ -41,33 +43,6 @@ async function test() {
         return;
     }
 
-    console.log("1. Testing StorageRepository");
-    let storageRepository: StorageRepository = context.repositories.storages;
-        
-    console.log("1.2. Testing post");
-    let newStorage: Storage = await storageRepository.post(
-        "test", {"data": "test"});
-    console.log(newStorage);
-
-    console.log("1.2. Testing get");
-    let storage: Storage = await storageRepository.get("test");
-    console.log(storage);
-
-    console.log("1.2. Testing post");
-    let newStorages: Storage[] = await storageRepository.postBatch([
-        {"key": "test2", "data": "test2"},
-        {"key": "test3", "data": "test3"},
-    ]);
-    console.log(newStorages);
-
-    console.log("1.2. Testing list");
-    let storages: Storage[] = await storageRepository.list();
-    storages.map((storage) => {
-        console.log(storage);
-    });
-
-
-    return;
 
     console.log("1.2. Testing getCurrentUserDetails");
     let userDetails: User = await userRepository.getCurrentUserDetails();
@@ -120,16 +95,73 @@ async function test() {
 
     let annotation = new Annotation(item);
     let outputField = item.outputFields[0];
-    //if (outputField.source != null)
-    //     annotation.addOutput(outputField.name, outputField.source.value[0]);
+    if (outputField.source != null)
+         annotation.addOutput(outputField.name, outputField.source.value[0]);
     console.log(annotation);
     console.log("4.2. Testing postAnnotation");
+    
+    /*
     let annotationResponse = await itemRepository.postAnnotation(
         item.id,
         annotation
     );
     console.log(annotationResponse);
     console.log(annotationResponse.feedback.getScore('output'));
+    */
+
+    console.log("5. Testing StorageRepository");
+    let storageRepository: StorageRepository = context.repositories.storages;
+        
+    console.log("5.1. Testing post");
+    let newStorage: Storage = await storageRepository.post(
+        "test", {"data": "test"});
+    console.log(newStorage);
+
+    console.log("5.2. Testing get");
+    let storage: Storage = await storageRepository.get("test");
+    console.log(storage);
+
+    console.log("5.3. Testing post");
+    let newStorages: Storage[] = await storageRepository.postBatch([
+        {"key": "test2", "data": "test2"},
+        {"key": "test3", "data": "test3"},
+    ]);
+    console.log(newStorages);
+
+    console.log("5.4. Testing list");
+    let storages: Storage[] = await storageRepository.list();
+    storages.map((storage) => {
+        console.log(storage);
+    });
+
+
+    console.log("6. Testing AchievementsRepository");
+    let achievementRepository: AchievementRepository = context.repositories.achievements;
+
+    console.log("6.1. Testing list");
+    let achievements: Achievement[] = await achievementRepository.list();
+    achievements.map((achievement) => {
+        console.log(achievement);
+    });
+
+    console.log("6.2. Testing listMission");
+    let missionAchievements: Achievement[] = await achievementRepository.listMission(mission.id);
+    missionAchievements.map((achievement) => {
+        console.log(achievement);
+    });
+
+    console.log("6.3. Testing listTask");
+    let taskAchievements: Achievement[] = await achievementRepository.listTask(task.id);
+    taskAchievements.map((achievement) => {
+        console.log(achievement);
+    });
+
+    console.log("6.4. Testing listUnclosed");
+    let unclosedAchievements: Achievement[] = await achievementRepository.listUnclosed();
+    unclosedAchievements.map((achievement) => {
+        console.log(achievement);
+    });
+
 }
 
 test();
