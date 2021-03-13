@@ -2,6 +2,7 @@ import AchievementRepository from "./repositories/achievementRepository";
 import BountyRepository from "./repositories/bountyRepository";
 import ItemRepository from "./repositories/itemRepository";
 import MissionRepository from "./repositories/missionRepository";
+import RankingRepository from "./repositories/rankingRepository";
 import StorageRepository from "./repositories/storageRepository";
 import TaskRepository from "./repositories/taskRepository";
 import UserRepository from "./repositories/userRepository";
@@ -16,7 +17,8 @@ class ContextRepositories {
         public tasks: TaskRepository,
         public items: ItemRepository,
         public storages: StorageRepository,
-        public achievements: AchievementRepository
+        public achievements: AchievementRepository,
+        public ranking: RankingRepository
     ) {}
 }
 
@@ -32,7 +34,8 @@ export default class Context {
             new TaskRepository(sessionManager),
             new ItemRepository(sessionManager),
             new StorageRepository(sessionManager),
-            new AchievementRepository(sessionManager)
+            new AchievementRepository(sessionManager),
+            new RankingRepository(sessionManager)
         );
     }
 }

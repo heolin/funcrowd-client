@@ -1,6 +1,6 @@
 
 export interface IRankingRow {
-    position: number,
+    position    : number,
     userId: number,
     username: string,
     value: number

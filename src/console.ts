@@ -14,6 +14,7 @@ import StorageRepository from "./repositories/storageRepository";
 import Storage from "./models/storage/storage";
 import AchievementRepository from "./repositories/achievementRepository";
 import Achievement from "./models/achievement/achievement";
+import RankingRepository from "./repositories/rankingRepository";
 
 
 async function test() {
@@ -34,8 +35,9 @@ async function test() {
     console.log("1. Testing UserRepository");
     console.log("1.1. Testing login");
 
+    let user;
     try {
-        let user: User = await userRepository.login("admin@admin.pl", "Wojtek1234");
+        user = await userRepository.login("admin@admin.pl", "Wojtek1234");
         context.sessionManager.setupUser(user);
         console.log(user);
     } catch(error) {
@@ -43,7 +45,15 @@ async function test() {
         return;
     }
 
+    let rankingRepository: RankingRepository = context.repositories.ranking;
 
+    let ranking = await rankingRepository.annotations.global();
+    console.log(ranking);
+
+    let userRanking = await rankingRepository.annotations.user(user.id);
+    console.log(userRanking);
+
+    /*
     console.log("1.2. Testing getCurrentUserDetails");
     let userDetails: User = await userRepository.getCurrentUserDetails();
     console.log(userDetails);
@@ -108,6 +118,7 @@ async function test() {
     console.log(annotationResponse);
     console.log(annotationResponse.feedback.getScore('output'));
     */
+    /*
 
     console.log("5. Testing StorageRepository");
     let storageRepository: StorageRepository = context.repositories.storages;
@@ -161,7 +172,7 @@ async function test() {
     unclosedAchievements.map((achievement) => {
         console.log(achievement);
     });
-
+    */
 }
 
 test();
