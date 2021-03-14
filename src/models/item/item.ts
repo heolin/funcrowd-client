@@ -62,14 +62,16 @@ export default class Item implements IItem {
         return _fields;
     }
 
-    static fromJson(data: IItem) {
-        return new Item(
-            data.id,
-            data.taskId,
-            data.data,
-            ItemTemplate.fromJson(data.template),
-            data.exp
-        );
+    static fromJson(data: IItem): Nullable<Item> {
+        if (data)
+            return new Item(
+                data.id,
+                data.taskId,
+                data.data,
+                ItemTemplate.fromJson(data.template),
+                data.exp
+            );
+        return undefined;
     }
 
     annotate() {
